@@ -79,9 +79,16 @@ def manage_stocks(stock_list):
 
 # Add new stock to track
 def add_stock(stock_list):
-    option = ""
-    while option != "0":
-        pass
+    clear_screen()
+    print("Add Stock ---")
+    symbol = input("Enter stock symbol: ").upper()
+    name = input("Enter stock name: ")
+    shares = float(input("Enter number of shares: "))
+    new_stock = Stock(symbol, name, shares)
+    stock_list.append(new_stock)
+    print("Stock added!")
+    input("Press Enter to continue...")
+
         
 # Buy or Sell Shares Menu
 def update_shares(stock_list):
@@ -109,9 +116,18 @@ def delete_stock(stock_list):
 
 
 # List stocks being tracked
+# List stocks being tracked
 def list_stocks(stock_list):
     clear_screen()
-    pass
+    print("Stocks Being Tracked ---\n")
+    if not stock_list:
+        print("No stocks in portfolio.")
+    else:
+        for stock in stock_list:
+            print(f"{stock.symbol} - {stock.name} - {stock.shares} shares")
+    print()
+    input("Press Enter to continue...")
+
 
 # Add Daily Stock Data
 def add_stock_data(stock_list):
@@ -119,11 +135,33 @@ def add_stock_data(stock_list):
     pass
 
 # Display Report for All Stocks
-def display_report(stock_data):
+def display_report(stock_list):
     clear_screen()
-    print("Stock Report ---")
-    for stock in stock_data:
-        pass
+    print("Stock Report ---\n")
+
+    if not stock_list:
+        print("No stocks in portfolio.")
+        input("\nPress Enter to continue...")
+        return
+
+    for stock in stock_list:
+        # Basic info
+        line = f"{stock.symbol} - {stock.name} - {stock.shares} shares"
+
+        # Try to show latest price & value if we have history
+        last_price = None
+        if hasattr(stock, "DataList") and stock.DataList:
+            # assume DataList is in date order, take last
+            last_price = stock.DataList[-1].close
+
+        if last_price is not None:
+            value = stock.shares * last_price
+            line += f" | Last Price: ${last_price:0.2f} | Value: ${value:0.2f}"
+
+        print(line)
+
+    input("\nPress Enter to continue...")
+
 
 
   
@@ -131,11 +169,29 @@ def display_report(stock_data):
 
 # Display Chart
 def display_chart(stock_list):
-    print("Stock List: [",end="")
-    for stock in stock_list:
-        pass
+    clear_screen()
+    print("Display Stock Chart ---\n")
 
-# Manage Data Menu
+    if not stock_list:
+        print("No stocks in portfolio.")
+        input("\nPress Enter to continue...")
+        return
+
+    # Show available symbols
+    print("Available Stocks:")
+    for stock in stock_list:
+        print(f"- {stock.symbol}")
+
+    symbol = input("\nEnter stock symbol to chart: ").upper()
+
+    # Call helper from utilities.py
+    try:
+        display_stock_chart(stock_list, symbol)
+    except Exception as e:
+        print("\nError displaying chart:", e)
+        input("\nPress Enter to continue...")
+
+
 # Manage Data Menu
 def manage_data(stock_list):
     option = ""
@@ -207,7 +263,26 @@ def retrieve_from_web(stock_list):
 # Import stock price and volume history from Yahoo! Finance using CSV Import
 def import_csv(stock_list):
     clear_screen()
-    pass
+    print("Import Data from CSV File ---\n")
+
+    if len(stock_list) == 0:
+        print("No stocks in portfolio. Add stocks first.")
+        input("Press Enter to continue...")
+        return
+
+    symbol = input("Enter stock symbol to import data for: ").upper()
+    filename = input("Enter full path to CSV file: ")
+
+    try:
+        stock_data.import_stock_web_csv(stock_list, symbol, filename)
+        print(f"\nImport complete for {symbol}.")
+    except FileNotFoundError:
+        print("\nFile not found. Check the path and try again.")
+    except Exception as e:
+        print("\nAn error occurred while importing data:", e)
+
+    input("\nPress Enter to continue...")
+
 
 # Begin program
 def main():
