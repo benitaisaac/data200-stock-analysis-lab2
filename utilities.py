@@ -13,14 +13,42 @@ def clear_screen():
 
 # Function to sort the stock list (alphabetical)
 def sortStocks(stock_list):
-    ## Sort the stock list
-    pass
+    stock_list.sort(key=lambda stock: stock.symbol)
+
 
 
 # Function to sort the daily stock data (oldest to newest) for all stocks
 def sortDailyData(stock_list):
-    pass
+    for stock in stock_list:
+        stock.DataList.sort(key=lambda daily: daily.date)
 
 # Function to create stock chart
-def display_stock_chart(stock_list,symbol):
-    pass
+def display_stock_chart(stock_list, symbol):
+    # find the stock
+    chosen = None
+    for stock in stock_list:
+        if stock.symbol.upper() == symbol.upper():
+            chosen = stock
+            break
+
+    if chosen is None:
+        print("Symbol not found.")
+        return
+
+    if not chosen.DataList:
+        print("No data available to chart.")
+        return
+
+    # extract dates and closing prices
+    dates = [daily.date for daily in chosen.DataList]
+    closes = [daily.close for daily in chosen.DataList]
+
+    # plot
+    plt.figure(figsize=(10,5))
+    plt.plot(dates, closes, marker='o')
+    plt.title(f"{chosen.symbol} Closing Price History")
+    plt.xlabel("Date")
+    plt.ylabel("Closing Price")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
