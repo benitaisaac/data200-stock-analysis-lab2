@@ -94,28 +94,142 @@ def add_stock(stock_list):
 def update_shares(stock_list):
     option = ""
     while option != "0":
-        pass
+        clear_screen()
+        print("Update Shares ---")
+        print("1 - Buy Shares")
+        print("2 - Sell Shares")
+        print("0 - Return to Manage Stocks")
+        option = input("Enter Menu Option: ")
+
+        if option == "1":
+            buy_stock(stock_list)
+        elif option == "2":
+            sell_stock(stock_list)
+        elif option == "0":
+            print("Returning to Manage Stocks...")
+            input("Press Enter to continue...")
+        else:
+            print("*** Invalid Option - Try again ***")
+            input("Press Enter to continue...")
+
 
 
 # Buy Stocks (add to shares)
 def buy_stock(stock_list):
     clear_screen()
-    print("Buy Shares ---")
-    print("Stock List: [",end="")
-    pass
+    print("Buy Shares ---\n")
+
+    if not stock_list:
+        print("No stocks in portfolio. Add stocks first.")
+        input("Press Enter to continue...")
+        return
+
+    print("Stocks Being Tracked:")
+    for stock in stock_list:
+        print(f"- {stock.symbol} ({stock.name})")
+
+    symbol = input("\nEnter stock symbol to buy: ").upper()
+    amount_text = input("Enter number of shares to buy: ")
+
+    try:
+        amount = float(amount_text)
+    except ValueError:
+        print("Invalid number of shares.")
+        input("Press Enter to continue...")
+        return
+
+    found = False
+    for stock in stock_list:
+        if stock.symbol == symbol:
+            stock.buy(amount)
+            print(f"\nUpdated {symbol}: now has {stock.shares} shares.")
+            found = True
+            break
+
+    if not found:
+        print("\nStock symbol not found.")
+
+    input("Press Enter to continue...")
+
 
 # Sell Stocks (subtract from shares)
 def sell_stock(stock_list):
     clear_screen()
-    pass
+    print("Sell Shares ---\n")
+
+    if not stock_list:
+        print("No stocks in portfolio. Add stocks first.")
+        input("Press Enter to continue...")
+        return
+
+    print("Stocks Being Tracked:")
+    for stock in stock_list:
+        print(f"- {stock.symbol} ({stock.name})")
+
+    symbol = input("\nEnter stock symbol to sell: ").upper()
+    amount_text = input("Enter number of shares to sell: ")
+
+    try:
+        amount = float(amount_text)
+    except ValueError:
+        print("Invalid number of shares.")
+        input("Press Enter to continue...")
+        return
+
+    found = False
+    for stock in stock_list:
+        if stock.symbol == symbol:
+            try:
+                stock.sell(amount)
+                print(f"\nUpdated {symbol}: now has {stock.shares} shares.")
+            except Exception as e:
+                # In case your Stock.sell() has any checks
+                print("\nError while selling shares:", e)
+            found = True
+            break
+
+    if not found:
+        print("\nStock symbol not found.")
+
+    input("Press Enter to continue...")
+
 
 # Remove stock and all daily data
 def delete_stock(stock_list):
     clear_screen()
-    pass
+    print("Delete Stock ---\n")
+
+    if not stock_list:
+        print("No stocks in portfolio.")
+        input("Press Enter to continue...")
+        return
+
+    print("Stocks Being Tracked:")
+    for stock in stock_list:
+        print(f"- {stock.symbol} ({stock.name})")
+
+    symbol = input("\nEnter stock symbol to delete: ").upper()
+
+    index_to_remove = -1
+    for i, stock in enumerate(stock_list):
+        if stock.symbol == symbol:
+            index_to_remove = i
+            break
+
+    if index_to_remove == -1:
+        print("\nStock symbol not found.")
+    else:
+        confirm = input(f"Are you sure you want to delete {symbol}? (y/n): ").lower()
+        if confirm == "y":
+            removed = stock_list.pop(index_to_remove)
+            print(f"\n{removed.symbol} removed from portfolio.")
+        else:
+            print("\nDelete cancelled.")
+
+    input("Press Enter to continue...")
 
 
-# List stocks being tracked
+
 # List stocks being tracked
 def list_stocks(stock_list):
     clear_screen()
@@ -132,7 +246,50 @@ def list_stocks(stock_list):
 # Add Daily Stock Data
 def add_stock_data(stock_list):
     clear_screen()
-    pass
+    print("Add Daily Stock Data ---\n")
+
+    if not stock_list:
+        print("No stocks in portfolio. Add stocks first.")
+        input("Press Enter to continue...")
+        return
+
+    print("Stocks Being Tracked:")
+    for stock in stock_list:
+        print(f"- {stock.symbol} ({stock.name})")
+
+    symbol = input("\nEnter stock symbol to add data for: ").upper()
+
+    chosen_stock = None
+    for stock in stock_list:
+        if stock.symbol == symbol:
+            chosen_stock = stock
+            break
+
+    if chosen_stock is None:
+        print("\nStock symbol not found.")
+        input("Press Enter to continue...")
+        return
+
+    date_str = input("Enter date (m/d/yy): ")
+    price_str = input("Enter closing price: ")
+    volume_str = input("Enter volume: ")
+
+    try:
+        date = datetime.strptime(date_str, "%m/%d/%y")
+        price = float(price_str)
+        volume = int(volume_str)
+    except ValueError:
+        print("\nInvalid date, price, or volume.")
+        input("Press Enter to continue...")
+        return
+
+    # Create a DailyData object and add it to this stock
+    daily = DailyData(date, price, volume)
+    chosen_stock.DataList.append(daily)
+
+    print("\nDaily data added successfully.")
+    input("Press Enter to continue...")
+
 
 # Display Report for All Stocks
 def display_report(stock_list):
