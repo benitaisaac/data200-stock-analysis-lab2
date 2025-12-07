@@ -12,10 +12,6 @@ def clear_screen():
 
 # Function to sort the stock list (alphabetical by symbol)
 def sortStocks(stock_list):
-    """
-    Simple bubble sort for stock_list using stock.symbol.
-    Avoids lambda or advanced features.
-    """
     n = len(stock_list)
     for i in range(n):
         for j in range(0, n - i - 1):
@@ -27,9 +23,6 @@ def sortStocks(stock_list):
 
 # Function to sort each stock's daily data by date (oldest first)
 def sortDailyData(stock_list):
-    """
-    Bubble sort for each stock's DataList using daily.date.
-    """
     for stock in stock_list:
         n = len(stock.DataList)
         for i in range(n):
@@ -42,10 +35,6 @@ def sortDailyData(stock_list):
 
 # Function to create stock price chart
 def display_stock_chart(stock_list, symbol):
-    """
-    Finds stock by symbol and plots its closing prices using matplotlib.
-    Written using only basic loops (no list comprehensions).
-    """
     # find the stock object
     chosen_stock = None
     for stock in stock_list:
@@ -57,14 +46,14 @@ def display_stock_chart(stock_list, symbol):
         print("Symbol not found.")
         return
 
-    # sort daily data by date (in case it's not sorted yet)
+    # sort daily data by date
     sortDailyData(stock_list)
 
     if len(chosen_stock.DataList) == 0:
         print("No data available to chart.")
         return
 
-    # Build dates list the simple way
+    # Build dates list 
     dates = []
     closes = []
     for daily in chosen_stock.DataList:
