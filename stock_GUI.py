@@ -197,7 +197,7 @@ class StockApp:
     def update_data(self, evt):
         self.display_stock_data()
 
-    # Display stock price and volume history + simple report.
+    # Display stock price and volume history + report.
     def display_stock_data(self):
         selection = self.stockList.curselection()
         if not selection:
@@ -225,7 +225,7 @@ class StockApp:
                     )
                     self.dailyDataList.insert(END, row)
 
-                # simple report summary
+                # report summary
                 if stock.DataList:
                     latest = stock.DataList[-1]
                     total_value = stock.shares * latest.close

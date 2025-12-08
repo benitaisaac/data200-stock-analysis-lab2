@@ -183,7 +183,7 @@ def sell_stock(stock_list):
                 stock.sell(amount)
                 print(f"\nUpdated {symbol}: now has {stock.shares} shares.")
             except Exception as e:
-                # In case your Stock.sell() has any checks
+                # In case Stock.sell() has any checks
                 print("\nError while selling shares:", e)
             found = True
             break
@@ -391,7 +391,6 @@ def manage_data(stock_list):
 
 
 
-# Get stock price and volume history from Yahoo! Finance using Web Scraping
 # Get stock price and volume history from Yahoo! Finance using Web Scraping
 def retrieve_from_web(stock_list):
     clear_screen()
